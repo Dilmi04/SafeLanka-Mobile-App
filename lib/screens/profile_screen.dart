@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-// Colors are defined right here at the top of the file.
-// No separate file needed - just copy this whole file as-is.
 class AppColors {
   static const Color primaryDark = Color(0xFF0D47A1);
   static const Color sosRed = Color(0xFFF44336);
