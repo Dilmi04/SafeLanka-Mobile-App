@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'navigation_drawer.dart';
 import 'map_screen.dart';
 
-// Colors are defined right here at the top of the file.
-// No separate file needed - just copy this whole file as-is.
 class AppColors {
   static const Color primaryDark = Color(0xFF0D47A1);
   static const Color primary = Color(0xFF1565C0);
@@ -111,7 +109,6 @@ class HomeScreen extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // ---- 2x2 feature grid ----
             GridView.count(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -198,7 +195,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 24), // breathing room above bottom nav
+            const SizedBox(height: 24), 
           ],
         ),
       ),
