@@ -77,9 +77,8 @@ class MapScreen extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24),
-                color: const Color(0xFFE8F0FE), // Light map background tint
+                color: const Color(0xFFE8F0FE), 
                 image: const DecorationImage(
-                  // මෙයට සිතියමක පසුබිම් රූපයක් (Map grid image) දැමිය හැක
                   image: AssetImage('assets/map_placeholder.png'),
                   fit: BoxFit.cover,
                   opacity: 0.1,
@@ -87,8 +86,7 @@ class MapScreen extends StatelessWidget {
               ),
               child: Stack(
                 children: [
-                  // Fake subtle map paths using custom shapes or styling can go here
-                  // Current location indicator (Blue pulsing dot appearance)
+                  // Current location indicator
                   Center(
                     child: Stack(
                       alignment: Alignment.center,
@@ -203,7 +201,6 @@ class MapScreen extends StatelessWidget {
     );
   }
 
-  // Helper widget to build beautiful map pins
   Widget _buildMapPin(IconData icon, Color color) {
     return Icon(
       icon,
