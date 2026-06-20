@@ -3,8 +3,7 @@ import 'home_screen.dart';
 import 'map_screen.dart';
 import 'profile_screen.dart';
 
-// Colors are defined right here at the top of the file.
-// No separate file needed - just copy this whole file as-is.
+
 class AppColors {
   static const Color primaryDark = Color(0xFF0D47A1);
   static const Color guideOrange = Color(0xFFFF9800);
