@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Colors are defined right here at the top of the file.
-// No separate file needed - just copy this whole file as-is.
+
 class AppColors {
   static const Color primaryDark = Color(0xFF0D47A1);
   static const Color primary = Color(0xFF1565C0);
@@ -40,7 +39,7 @@ class PlaceDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ---- Hero image with back button overlay ----
+
             Stack(
               children: [
                 Container(
@@ -88,7 +87,6 @@ class PlaceDetailsScreen extends StatelessWidget {
               ],
             ),
 
-            // ---- Details ----
             Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -109,7 +107,6 @@ class PlaceDetailsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
 
-                  // open hours pill
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
@@ -155,7 +152,6 @@ class PlaceDetailsScreen extends StatelessWidget {
 
                   const SizedBox(height: 22),
 
-                  // ---- Action buttons ----
                   Row(
                     children: [
                       Expanded(child: _PillButton(icon: Icons.call_outlined, label: "Call", onTap: () {})),
@@ -253,7 +249,6 @@ class _FacilityTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Alternate tint so tags don't all look identical, like the design.
     final isOrange = label.toLowerCase() == "pharmacy";
     final color = isOrange ? AppColors.guideOrange : AppColors.sosRed;
     return Container(
