@@ -119,18 +119,6 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 const SizedBox(height: 32),
 
-                // Logo
-                Image.asset(
-                  'assets/images/logo.png',
-                  height: 80,
-                  errorBuilder: (context, error, stackTrace) => const Icon(
-                    Icons.shield,
-                    size: 80,
-                    color: AppColors.primary,
-                  ),
-                ),
-                const SizedBox(height: 16),
-
                 const Text(
                   'Welcome Back!',
                   style: TextStyle(
@@ -230,16 +218,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     _SocialButton(
                       label: 'Google',
-                      iconPath: 'assets/icons/google.png',
+                      isGoogle: true,
                       onTap: _loginWithGoogle,
                     ),
                     const SizedBox(width: 16),
                     _SocialButton(
                       label: 'Facebook',
-                      iconPath: 'assets/icons/facebook.png',
-                      onTap: () {
-                        // TODO: Facebook login
-                      },
+                      isGoogle: false,
+                      onTap: () {},
                     ),
                   ],
                 ),
@@ -277,12 +263,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
 class _SocialButton extends StatelessWidget {
   final String label;
-  final String iconPath;
+  final bool isGoogle;
   final VoidCallback onTap;
 
   const _SocialButton({
     required this.label,
-    required this.iconPath,
+    required this.isGoogle,
     required this.onTap,
   });
 
@@ -292,20 +278,107 @@ class _SocialButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade300),
+          color: Colors.white,
+          border: Border.all(color: Colors.grey.shade200),
           borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            Image.asset(iconPath, height: 22, errorBuilder: (context, error, stackTrace) =>
-            const Icon(Icons.g_mobiledata, size: 22)),
-            const SizedBox(width: 8),
-            Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
           ],
+        ),
+        child: isGoogle ? _googleIcon() : _facebookIcon(),
+      ),
+    );
+  }
+
+  // Google 'G' icon drawn with CustomPaint
+  Widget _googleIcon() {
+    return CustomPaint(
+      size: const Size(24, 24),
+      painter: _GoogleIconPainter(),
+    );
+  }
+
+  // Facebook 'f' icon
+  Widget _facebookIcon() {
+    return Container(
+      width: 24,
+      height: 24,
+      decoration: const BoxDecoration(
+        color: Color(0xFF1877F2),
+        shape: BoxShape.circle,
+      ),
+      child: const Center(
+        child: Text(
+          'f',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            height: 1.2,
+          ),
         ),
       ),
     );
   }
+}
+
+// Custom painter for Google 'G' icon
+class _GoogleIconPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2;
+
+    // Draw circle segments (Google colors)
+    final colors = [
+      const Color(0xFF4285F4), // blue
+      const Color(0xFF34A853), // green
+      const Color(0xFFFBBC05), // yellow
+      const Color(0xFFEA4335), // red
+    ];
+
+    final startAngles = [-0.52, 0.52, 2.09, -2.09];
+    final sweepAngles = [1.04, 1.57, 1.04, 1.57];
+
+    for (int i = 0; i < 4; i++) {
+      final paint = Paint()
+        ..color = colors[i]
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = size.width * 0.18
+        ..strokeCap = StrokeCap.butt;
+
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius * 0.72),
+        startAngles[i],
+        sweepAngles[i],
+        false,
+        paint,
+      );
+    }
+
+    // White horizontal bar for the 'G' cutout
+    final whitePaint = Paint()..color = Colors.white;
+    canvas.drawRect(
+      Rect.fromLTWH(size.width * 0.5, size.height * 0.38,
+          size.width * 0.5, size.height * 0.24),
+      whitePaint,
+    );
+
+    // Blue fill for right side of G
+    final bluePaint = Paint()..color = const Color(0xFF4285F4);
+    canvas.drawRect(
+      Rect.fromLTWH(size.width * 0.5, size.height * 0.38,
+          size.width * 0.38, size.height * 0.24),
+      bluePaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
