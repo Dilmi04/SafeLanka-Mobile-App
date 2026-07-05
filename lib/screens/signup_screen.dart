@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:safelanka/services/auth_service.dart';
 import 'package:safelanka/screens/login_screen.dart';
 import 'package:safelanka/screens/sos_screen.dart';
+import 'package:safelanka/screens/home_screen.dart';
 import 'package:safelanka/utils/constants.dart';
 import 'package:safelanka/widgets/custom_button.dart';
 import 'package:safelanka/widgets/custom_textfield.dart';
@@ -60,7 +61,7 @@ class _SignupScreenState extends State<SignupScreen> {
       if (user != null && mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (_) => const SosScreen()),
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
               (route) => false,
         );
       }
@@ -82,6 +83,14 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.textDark),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),

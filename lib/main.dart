@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:safelanka/screens/splash_screen.dart';
 import 'package:safelanka/screens/login_screen.dart';
 import 'package:safelanka/screens/signup_screen.dart';
 import 'package:safelanka/screens/sos_screen.dart';
 import 'package:safelanka/screens/emergency_contacts_screen.dart';
+import 'package:safelanka/screens/home_screen.dart';
+import 'package:safelanka/screens/map_screen.dart';
+import 'package:safelanka/screens/place_details_screen.dart';
+import 'package:safelanka/screens/emergency_guide_screen.dart';
+import 'package:safelanka/screens/guide_details_screen.dart';
+import 'package:safelanka/screens/missing_list_screen.dart';
+import 'package:safelanka/screens/missing_report_screen.dart';
+import 'package:safelanka/screens/report_details_screen.dart';
+import 'package:safelanka/screens/ai_assistant_screen.dart';
+import 'package:safelanka/screens/profile_screen.dart';
+import 'package:safelanka/screens/settings_screen.dart';
+import 'package:safelanka/screens/about_us_screen.dart';
 import 'package:safelanka/utils/constants.dart';
 
 void main() async {
@@ -62,12 +75,28 @@ class SafeLankaApp extends StatelessWidget {
         fontFamily: 'Roboto',
         useMaterial3: true,
       ),
-      home: const LoginScreen(),
+      home: const SplashScreen(),
       routes: {
         '/login':     (_) => const LoginScreen(),
         '/signup':    (_) => const SignupScreen(),
+        '/home':      (_) => const HomeScreen(),
         '/sos':       (_) => const SosScreen(),
         '/contacts':  (_) => const EmergencyContactsScreen(),
+        '/map':       (_) => const MapScreen(),
+        '/profile':   (_) => const ProfileScreen(),
+        '/emergency-guide': (_) => const EmergencyGuideScreen(),
+        '/guide-details': (_) => const GuideDetailsScreen(),
+        '/ai-assistant': (_) => const AiVoiceAssistantScreen(),
+        '/missing-list': (_) => const MissingPersonsListScreen(),
+        '/missing-report': (_) => const ReportMissingPersonScreen(),
+        '/missing-details': (_) => const MissingPersonDetailsScreen(),
+        '/settings':  (_) => const SettingsScreen(),
+        '/about':     (_) => const AboutUsScreen(),
+        '/place':     (_) => const PlaceDetailsScreen(
+          placeName: "City Hospital",
+          placeType: "Hospital",
+          distance: "0.8 km",
+        ),
       },
     );
   }
