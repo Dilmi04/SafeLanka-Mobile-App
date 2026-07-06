@@ -1,110 +1,107 @@
 import 'package:flutter/material.dart';
 
 class GuideDetailsScreen extends StatelessWidget {
-  const GuideDetailsScreen({Key? key}) : super(key: key);
+  final String title;
+  final String heading;
+  final String imageUrl;
+  final List<String> safetySteps;
+
+  const GuideDetailsScreen({
+    Key? key,
+    required this.title,
+    required this.heading,
+    required this.imageUrl,
+    required this.safetySteps,
+  }) : super(key: key);
+
+  IconData _getFallbackIcon(String title) {
+    if (title.contains('Flood')) return Icons.waves;
+    if (title.contains('Landslide')) return Icons.terrain;
+    if (title.contains('First Aid')) return Icons.add_box;
+    if (title.contains('Fire')) return Icons.local_fire_department;
+    if (title.contains('Earthquake')) return Icons.vibration;
+    return Icons.info_outline;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final List<String> safetySteps = [
-      'Move to higher ground immediately.',
-      'Do not walk or drive through flooded areas.',
-      'Turn off electricity at the main switch if safe.',
-      'Keep emergency supplies in a safe place.',
-      'Stay updated through official channels.',
-    ];
-
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 20),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'Flood Safety',
-          style: TextStyle(
-            color: Color(0xFF1E293B),
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
+        title: Text(
+          title,
+          style: const TextStyle(color: Color(0xFF1E293B), fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.bookmark_border, color: Colors.black, size: 24),
-            onPressed: () {},
-          ),
-        ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: double.infinity,
-                    height: 180,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFB0C4DE),
-                      borderRadius: BorderRadius.circular(16.0),
-                      image: const DecorationImage(
-                        image: NetworkImage(
-                          'https://images.unsplash.com/photo-1547683905-f686c993aae5?q=80&w=600&auto=format&fit=crop',
-                        ),
-                        fit: BoxFit.cover,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: double.infinity,
+              height: 220,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF8FAFC),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20.0),
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.contain,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: const Color(0xFFF1F5F9),
+                      child: Center(
+                        child: Icon(_getFallbackIcon(title), size: 80, color: Colors.blueGrey[100]),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 28),
-                  const Text(
-                    'What to do during a flood?',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF0F172A),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  ...safetySteps.map((step) => Padding(
-                        padding: const EdgeInsets.only(bottom: 18.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 6.0, right: 12.0),
-                              child: Container(
-                                width: 6,
-                                height: 6,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFF0F172A),
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                step,
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  color: Color(0xFF334155),
-                                  height: 1.4,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )).toList(),
-                ],
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 32),
+            Text(
+              heading,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+            ),
+            const SizedBox(height: 24),
+            ...safetySteps.map((step) => Padding(
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0, right: 14.0),
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          decoration: const BoxDecoration(color: Color(0xFF3B82F6), shape: BoxShape.circle),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          step,
+                          style: const TextStyle(fontSize: 16, color: Color(0xFF475569), height: 1.5),
+                        ),
+                      ),
+                    ],
+                  ),
+                )).toList(),
+          ],
+        ),
       ),
     );
   }
