@@ -43,10 +43,12 @@ void main() async {
     if (kIsWeb) {
       await Firebase.initializeApp(
         options: const FirebaseOptions(
-          apiKey: "AIzaSyAs-Placeholder-Key",
-          appId: "1:1234567890:web:placeholder",
-          messagingSenderId: "1234567890",
-          projectId: "safelanka-placeholder",
+          apiKey: "AIzaSyAp2Rsf3n7hE8YZ6HFGsU8_xPQkjZQNcxc",
+          authDomain: "safelanka-56cc6.firebaseapp.com",
+          projectId: "safelanka-56cc6",
+          storageBucket: "safelanka-56cc6.firebasestorage.app",
+          messagingSenderId: "886931493603",
+          appId: "1:886931493603:web:af46e42770364b676cebd6",
         ),
       );
     } else {
