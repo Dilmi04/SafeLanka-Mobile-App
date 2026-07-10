@@ -1,85 +1,164 @@
 # 🛡️ SafeLanka - Disaster Safety & Emergency Assistance
 
-SafeLanka is a comprehensive mobile application designed to assist citizens of Sri Lanka during natural disasters and emergencies. The app integrates real-time communication, location-based safety assistance, and AI-driven support to ensure user safety when it matters most.
+SafeLanka is a mobile application developed to support people in Sri Lanka during natural disasters and emergency situations. The application provides emergency assistance, safe location navigation, disaster preparedness guides, AI-powered support, and missing person reporting to improve public safety.
+
+**Group No:** 21
+
+**Group Members:** 
+ - FC221045 - S.A.D.Sandunika
+ - FC222042 - D.T.Paranavithana
+ - FC221049 - P.M.S.Kavindya 
 
 ---
 
-## 🌟 Key Features
+# 🌟 Features
 
-### 🆘 SOS & Emergency Response
-* **Instant SOS Alerts**: Trigger emergency alerts to trusted contacts with a single tap.
-* **Live Location Sharing**: Share real-time GPS coordinates with family and emergency services.
-* **Secure Authentication**: Firebase-powered login and registration for personalized safety.
-
-### 📍 Safe Locations & Mapping
-* **Interactive Safety Map**: View nearby hospitals, police stations, and emergency shelters using OpenStreetMap.
-* **Smart Filtering**: Filter locations by category (Hospitals, Police, Shelters).
-* **Navigation & Directions**: Get step-by-step directions to the nearest safe point via Google Maps integration.
-* **Distance Calculation**: Automatically calculates how far you are from each emergency location.
-
-### 📚 Disaster Preparedness
-* **Offline Emergency Guide**: Detailed safety manuals for Floods, Landslides, Fires, and Earthquakes, accessible without internet.
-* **Emergency Hotlines**: One-tap calling for national emergency numbers (119, 1990, 110, 117).
-* **Real-time Notifications**: Instant alerts for weather warnings and disaster updates.
-
-### 🤖 AI & Missing Person Module
-* **AI Voice Assistant**: Voice-activated emergency help powered by Google Gemini AI.
-* **Missing Person Reporting**: Upload and view reports of missing persons during disasters.
-* **Cloud Integration**: All reports and user data are securely managed via Firebase Firestore and Storage.
+## 🆘 SOS & Emergency Response
+- One-tap SOS emergency alert
+- Live GPS location sharing
+- Emergency contact management
+- Firebase Authentication (Login & Registration)
 
 ---
 
-## 🛠️ Tech Stack
-
-- **Framework**: [Flutter](https://flutter.dev/) (Cross-platform)
-- **Language**: [Dart](https://dart.dev/)
-- **Backend**: [Firebase](https://firebase.google.com/) (Authentication, Firestore, Cloud Storage)
-- **Maps**: [Flutter Map](https://pub.dev/packages/flutter_map) & [OpenStreetMap](https://www.openstreetmap.org/)
-- **AI**: [Google Gemini API](https://ai.google.dev/)
-- **State Management**: Provider / Stateful Widgets
+## 📍 Safe Locations & Navigation
+- View nearby hospitals, police stations, and emergency shelters
+- Interactive map using OpenStreetMap
+- Search and filter safe locations
+- Distance calculation
+- Navigation using Google Maps
 
 ---
 
-## 👥 Group Members & Responsibilities
-
-| Member Name | Primary Responsibilities |
-| :--- | :--- |
-| **Dilmi Perera** | Safe Locations, Map Integration, Navigation, Distance Calculation, UI Improvements |
-| **Sachini** | Authentication (Login/SignUp), SOS Alerts, Location Sharing, SMS Integration |
-| **Devini** | Offline Emergency Guide, AI Voice Assistant, Missing Person Reporting (CRUD) |
-
----
-
-## 📸 Screenshots
-
-| Splash Screen | Home Screen | Map & Locations | Emergency Guide |
-| :---: | :---: | :---: | :---: |
-| ![Splash](https://via.placeholder.com/150x300?text=Splash) | ![Home](https://via.placeholder.com/150x300?text=Home) | ![Map](https://via.placeholder.com/150x300?text=Map) | ![Guide](https://via.placeholder.com/150x300?text=Guide) |
+## 📚 Emergency Guide
+- Offline disaster preparedness guides
+- Flood safety
+- Landslide safety
+- Fire safety
+- Earthquake safety
+- Emergency hotline numbers
 
 ---
 
-## 🚀 How to Run the Project
-
-1. **Clone the repository**:
-2. **Install dependencies**:
-3. Setup Firebase: Place your google-services.json in android/app/.
-4. Run the application:
-          **Setup Firebase**:
-             - Place your `google-services.json` in `android/app/`.
-          **Run the application**:
-
+## 🤖 AI Assistance
+- AI-powered voice assistant
+- Emergency guidance using Google Gemini API
 
 ---
 
-## 📄 License
-This project is developed for educational purposes at the **University of Sri Jayewardenepura**.
+## 👤 Missing Person Module
+- Report missing persons
+- View missing person reports
+- Firebase Firestore integration
+- Firebase Storage image upload
 
 ---
-*Stay Safe. SafeLanka is with you.*
-          
 
+# 🛠️ Tech Stack
 
+| Technology | Description |
+|------------|-------------|
+| Flutter | Cross-platform mobile application framework |
+| Dart | Programming language |
+| Firebase Authentication | User authentication |
+| Cloud Firestore | Cloud database |
+| Firebase Storage | Image storage |
+| OpenStreetMap | Interactive maps |
+| Flutter Map | Map rendering |
+| Google Maps | Navigation |
+| Google Gemini API | AI voice assistant |
 
+---
 
-          
-   
+# 📂 Project Structure
+
+```
+lib/
+│
+├── models/
+├── screens/
+├── services/
+├── widgets/
+├── utils/
+├── firebase_options.dart
+└── main.dart
+```
+
+---
+
+# 👥 Group Members
+
+| Member | Responsibilities |
+|---------|------------------|
+| **Dilmi** | Safe Locations, Maps, Navigation, Place Details, Distance Calculation, UI Design |
+| **Sachini** | Authentication, SOS Alerts, Emergency Contacts, Location Sharing |
+| **Devini** | Emergency Guide, AI Voice Assistant, Missing Person Module |
+
+---
+
+# 📸 Screenshots
+
+> Screenshots will be added after completing the application.
+
+---
+
+# 🚀 Installation
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Dilmi04/SafeLanka-Mobile-App.git
+```
+
+### 2. Open the project
+
+```bash
+cd SafeLanka-Mobile-App
+```
+
+### 3. Install dependencies
+
+```bash
+flutter pub get
+```
+
+### 4. Configure Firebase
+
+- Create a Firebase project.
+- Enable Authentication.
+- Enable Cloud Firestore.
+- Enable Firebase Storage.
+- Download `google-services.json`.
+- Place it inside:
+
+```
+android/app/
+```
+
+### 5. Run the application
+
+```bash
+flutter run
+```
+
+---
+
+# 📌 Future Improvements
+
+- Push notifications
+- Real-time disaster alerts
+- Offline map support
+- Multi-language support
+- Weather API integration
+
+---
+
+# 📄 License
+
+This project was developed for academic purposes as part of the Mobile Computing module at the **University of Sri Jayewardenepura**.
+
+---
+
+# ❤️ SafeLanka
+
+**Stay Safe. Stay Prepared. SafeLanka is always with you.**
