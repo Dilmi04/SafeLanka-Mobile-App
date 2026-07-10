@@ -96,12 +96,6 @@ lib/
 
 ---
 
-# 📸 Screenshots
-
-> Screenshots will be added after completing the application.
-
----
-
 # 🚀 Installation
 
 ### 1. Clone the repository
