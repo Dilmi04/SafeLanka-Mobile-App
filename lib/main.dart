@@ -18,6 +18,7 @@ import 'package:safelanka/screens/ai_assistant_screen.dart';
 import 'package:safelanka/screens/profile_screen.dart';
 import 'package:safelanka/screens/settings_screen.dart';
 import 'package:safelanka/screens/about_us_screen.dart';
+import 'package:safelanka/screens/notifications_screen.dart';
 import 'package:safelanka/utils/constants.dart';
 
 void main() async {
@@ -93,10 +94,14 @@ class SafeLankaApp extends StatelessWidget {
         '/missing-details': (_) => const MissingPersonDetailsScreen(),
         '/settings':  (_) => const SettingsScreen(),
         '/about':     (_) => const AboutUsScreen(),
+        '/notifications': (_) => const NotificationsScreen(),
         '/place':     (_) => const PlaceDetailsScreen(
           placeName: "City Hospital",
           placeType: "Hospital",
           distance: "0.8 km",
+          lat: 6.9271,
+          lng: 79.8612,
+          phone: "011 269 1111",
         ),
       },
     );

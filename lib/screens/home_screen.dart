@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:safelanka/services/auth_service.dart';
+import 'package:safelanka/services/map_service.dart';
 import 'package:safelanka/utils/constants.dart';
 import 'navigation_drawer.dart';
 import 'map_screen.dart';
@@ -10,6 +11,44 @@ class HomeScreen extends StatelessWidget {
   void _showComingSoon(BuildContext context, String feature) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('$feature screen coming soon')),
+    );
+  }
+
+  void _showHotlineSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        maxChildSize: 0.9,
+        minChildSize: 0.4,
+        expand: false,
+        builder: (context, scrollController) => SingleChildScrollView(
+          controller: scrollController,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 20),
+                  decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2)),
+                ),
+                const Text("Emergency Hotlines", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 20),
+                const _HotlineTile(icon: Icons.local_police, label: "Police Emergency", number: "119", color: Colors.blue),
+                const _HotlineTile(icon: Icons.medical_services, label: "Ambulance (Suwa Seriya)", number: "1990", color: Colors.red),
+                const _HotlineTile(icon: Icons.local_fire_department, label: "Fire & Rescue", number: "110", color: Colors.orange),
+                const _HotlineTile(icon: Icons.gpp_maybe, label: "Disaster Management", number: "117", color: Colors.green),
+                const SizedBox(height: 12),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -37,7 +76,7 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none, color: Colors.black87),
-            onPressed: () {},
+            onPressed: () => Navigator.pushNamed(context, '/notifications'),
           ),
         ],
       ),
@@ -225,7 +264,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () => _showComingSoon(context, "Emergency Hotline"),
+                    onTap: () => _showHotlineSheet(context),
                     child: Container(
                       padding: const EdgeInsets.all(10),
                       decoration: const BoxDecoration(
@@ -286,6 +325,30 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
+class _HotlineTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String number;
+  final Color color;
+
+  const _HotlineTile({required this.icon, required this.label, required this.number, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ListTile(
+        leading: CircleAvatar(backgroundColor: color.withOpacity(0.1), child: Icon(icon, color: color)),
+        title: Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+        subtitle: Text(number, style: TextStyle(color: color, fontWeight: FontWeight.bold)),
+        trailing: const Icon(Icons.call, color: Colors.green),
+        onTap: () => MapService.makePhoneCall(number),
+      ),
+    );
+  }
+}
+
 class _FeatureCard extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
@@ -300,6 +363,44 @@ class _FeatureCard extends StatelessWidget {
     required this.subtitle,
     required this.onTap,
   });
+
+  void _showHotlineSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        maxChildSize: 0.9,
+        minChildSize: 0.4,
+        expand: false,
+        builder: (context, scrollController) => SingleChildScrollView(
+          controller: scrollController,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 20),
+                  decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2)),
+                ),
+                const Text("Emergency Hotlines", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 20),
+                const _HotlineTile(icon: Icons.local_police, label: "Police Emergency", number: "119", color: Colors.blue),
+                const _HotlineTile(icon: Icons.medical_services, label: "Ambulance (Suwa Seriya)", number: "1990", color: Colors.red),
+                const _HotlineTile(icon: Icons.local_fire_department, label: "Fire & Rescue", number: "110", color: Colors.orange),
+                const _HotlineTile(icon: Icons.gpp_maybe, label: "Disaster Management", number: "117", color: Colors.green),
+                const SizedBox(height: 12),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -357,6 +458,44 @@ class _NavIcon extends StatelessWidget {
     this.selected = false,
     required this.onTap,
   });
+
+  void _showHotlineSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        maxChildSize: 0.9,
+        minChildSize: 0.4,
+        expand: false,
+        builder: (context, scrollController) => SingleChildScrollView(
+          controller: scrollController,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 20),
+                  decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2)),
+                ),
+                const Text("Emergency Hotlines", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 20),
+                const _HotlineTile(icon: Icons.local_police, label: "Police Emergency", number: "119", color: Colors.blue),
+                const _HotlineTile(icon: Icons.medical_services, label: "Ambulance (Suwa Seriya)", number: "1990", color: Colors.red),
+                const _HotlineTile(icon: Icons.local_fire_department, label: "Fire & Rescue", number: "110", color: Colors.orange),
+                const _HotlineTile(icon: Icons.gpp_maybe, label: "Disaster Management", number: "117", color: Colors.green),
+                const SizedBox(height: 12),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
