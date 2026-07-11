@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:safelanka/utils/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,19 +17,26 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-    
+
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
     _controller.forward();
 
-    // Navigate to Home after 3 seconds
     Timer(const Duration(seconds: 3), () {
-      if (mounted) {
+      if (!mounted) return;
+
+      final user = FirebaseAuth.instance.currentUser;
+
+      debugPrint("Current User: ${user?.email}");
+
+      if (user != null) {
         Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        Navigator.pushReplacementNamed(context, '/login');
       }
     });
   }
