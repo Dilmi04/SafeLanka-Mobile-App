@@ -1,0 +1,12 @@
+{
+  "title": "Fire Safety",
+  "heading": "How to escape a fire safely",
+  "imageUrl": "assets/images/fire.png",
+  "safetySteps": [
+    "Crawl low under smoke to your exit.",
+    "Before opening a door, feel it with the back of your hand.",
+    "If your clothes catch fire, STOP, DROP, and ROLL.",
+    "Get out, stay out, and call for help.",
+    "Never go back inside a burning building."
+  ]
+}

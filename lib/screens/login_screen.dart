@@ -5,6 +5,7 @@ import 'package:safelanka/screens/sos_screen.dart';
 import 'package:safelanka/utils/constants.dart';
 import 'package:safelanka/widgets/custom_button.dart';
 import 'package:safelanka/widgets/custom_textfield.dart';
+import 'package:safelanka/screens/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -269,6 +270,7 @@ class _SocialButton extends StatelessWidget {
   final VoidCallback onTap;
 
   const _SocialButton({
+    super.key,
     required this.label,
     required this.isGoogle,
     required this.onTap,
@@ -287,7 +289,7 @@ class _SocialButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
+              color: Colors.black.withOpacity(0.06),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),

@@ -1,0 +1,12 @@
+{
+  "title": "First Aid",
+  "heading": "Basic life-saving first aid steps",
+  "imageUrl": "assets/images/first_aid.png",
+  "safetySteps": [
+    "Check the scene for safety before helping.",
+    "Call for emergency medical help immediately.",
+    "Perform CPR if the person is not breathing.",
+    "Apply pressure to wounds to stop bleeding.",
+    "Keep the person warm and calm."
+  ]
+}

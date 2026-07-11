@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:safelanka/utils/constants.dart';
+import 'package:safelanka/services/map_service.dart';
 
 
 class PlaceDetailsScreen extends StatelessWidget {
   final String placeName;
   final String placeType;
   final String distance;
+  final double lat;
+  final double lng;
+  final String phone;
   final String address;
   final String openHours;
   final String aboutText;
@@ -16,6 +20,9 @@ class PlaceDetailsScreen extends StatelessWidget {
     required this.placeName,
     required this.placeType,
     required this.distance,
+    required this.lat,
+    required this.lng,
+    this.phone = "011 234 5678",
     this.address = "No. 123, Main Street, Colombo 08",
     this.openHours = "Open 24 Hours",
     this.aboutText =
@@ -146,18 +153,18 @@ class PlaceDetailsScreen extends StatelessWidget {
 
                   Row(
                     children: [
-                      Expanded(child: _PillButton(icon: Icons.call_outlined, label: "Call", onTap: () {})),
+                      Expanded(child: _PillButton(icon: Icons.call_outlined, label: "Call", onTap: () => MapService.makePhoneCall(phone))),
                       const SizedBox(width: 12),
                       Expanded(
                         child: _PillButton(
                           icon: Icons.navigation_outlined,
                           label: "Directions",
                           filled: true,
-                          onTap: () {},
+                          onTap: () => MapService.openMapDirections(lat, lng),
                         ),
                       ),
                       const SizedBox(width: 12),
-                      Expanded(child: _PillButton(icon: Icons.share_outlined, label: "Share", onTap: () {})),
+                      Expanded(child: _PillButton(icon: Icons.share_outlined, label: "Share", onTap: () => MapService.sharePlaceDetails(placeName, address, phone, lat, lng))),
                     ],
                   ),
 

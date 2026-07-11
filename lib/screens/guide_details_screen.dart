@@ -23,6 +23,15 @@ class GuideDetailsScreen extends StatelessWidget {
     return Icons.info_outline;
   }
 
+  Widget _buildErrorWidget() {
+    return Container(
+      color: const Color(0xFFF1F5F9),
+      child: Center(
+        child: Icon(_getFallbackIcon(title), size: 80, color: Colors.blueGrey[100]),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,22 +63,21 @@ class GuideDetailsScreen extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20.0),
-                child: Image.network(
-                  imageUrl,
-                  fit: BoxFit.contain,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const Center(child: CircularProgressIndicator(strokeWidth: 2));
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: const Color(0xFFF1F5F9),
-                      child: Center(
-                        child: Icon(_getFallbackIcon(title), size: 80, color: Colors.blueGrey[100]),
-                      ),
-                    );
-                  },
-                ),
+                child: imageUrl.startsWith('http')
+                  ? Image.network(
+                      imageUrl,
+                      fit: BoxFit.contain,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+                      },
+                      errorBuilder: (context, error, stackTrace) => _buildErrorWidget(),
+                    )
+                  : Image.asset(
+                      imageUrl,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) => _buildErrorWidget(),
+                    ),
               ),
             ),
             const SizedBox(height: 32),

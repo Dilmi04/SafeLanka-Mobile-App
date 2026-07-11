@@ -18,27 +18,12 @@ import 'package:safelanka/screens/ai_assistant_screen.dart';
 import 'package:safelanka/screens/profile_screen.dart';
 import 'package:safelanka/screens/settings_screen.dart';
 import 'package:safelanka/screens/about_us_screen.dart';
+import 'package:safelanka/screens/notifications_screen.dart';
 import 'package:safelanka/utils/constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Display errors on screen instead of a blank page
-  ErrorWidget.builder = (FlutterErrorDetails details) {
-    return Material(
-      child: Container(
-        color: Colors.red,
-        padding: const EdgeInsets.all(20),
-        child: SingleChildScrollView(
-          child: Text(
-            'App Error:\n\n${details.exception}\n\n${details.stack}',
-            style: const TextStyle(color: Colors.white, fontSize: 12),
-          ),
-        ),
-      ),
-    );
-  };
-
   try {
     if (kIsWeb) {
       await Firebase.initializeApp(
@@ -71,32 +56,33 @@ class SafeLankaApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: AppColors.primary,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: AppColors.primary,
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
         fontFamily: 'Roboto',
         useMaterial3: true,
       ),
       home: const SplashScreen(),
       routes: {
-        '/login':     (_) => const LoginScreen(),
-        '/signup':    (_) => const SignupScreen(),
-        '/home':      (_) => const HomeScreen(),
-        '/sos':       (_) => const SosScreen(),
-        '/contacts':  (_) => const EmergencyContactsScreen(),
-        '/map':       (_) => const MapScreen(),
-        '/profile':   (_) => const ProfileScreen(),
-        '/emergency-guide': (_) => const EmergencyGuideScreen(),
-        '/ai-assistant': (_) => const AiVoiceAssistantScreen(),
-        '/missing-list': (_) => const MissingPersonsListScreen(),
-        '/missing-report': (_) => const ReportMissingPersonScreen(),
-        '/missing-details': (_) => const MissingPersonDetailsScreen(),
-        '/settings':  (_) => const SettingsScreen(),
-        '/about':     (_) => const AboutUsScreen(),
-        '/place':     (_) => const PlaceDetailsScreen(
-          placeName: "City Hospital",
+        '/login':             (_) => const LoginScreen(),
+        '/signup':            (_) => const SignupScreen(),
+        '/home':              (_) => const HomeScreen(),
+        '/sos':               (_) => const SosScreen(),
+        '/contacts':          (_) => const EmergencyContactsScreen(),
+        '/map':               (_) => const MapScreen(),
+        '/profile':           (_) => const ProfileScreen(),
+        '/emergency-guide':   (_) => const EmergencyGuideScreen(),
+        '/ai-assistant':      (_) => const AiVoiceAssistantScreen(),
+        '/missing-list':      (_) => const MissingPersonsListScreen(),
+        '/missing-report':    (_) => const ReportMissingPersonScreen(),
+        '/settings':          (_) => const SettingsScreen(),
+        '/about':             (_) => const AboutUsScreen(),
+        '/notifications':     (_) => const NotificationsScreen(),
+        '/place':             (_) => const PlaceDetailsScreen(
+          placeName: "SJGH Hospital",
           placeType: "Hospital",
-          distance: "0.8 km",
+          distance: "3.2 km",
+          lat: 6.8817,
+          lng: 79.9189,
+          phone: "+94112778610",
         ),
       },
     );
