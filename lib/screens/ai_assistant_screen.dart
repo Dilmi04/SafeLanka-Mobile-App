@@ -1,34 +1,94 @@
 import 'package:flutter/material.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:avatar_glow/avatar_glow.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import '../services/ai_service.dart';
 
-class AiVoiceAssistantScreen extends StatelessWidget {
+class AiVoiceAssistantScreen extends StatefulWidget {
   const AiVoiceAssistantScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    // Dynamic list containing the prompt suggestions
-    final List<String> suggestions = [
-      'What should I do in a flood?',
-      'How to provide first aid?',
-      'Show nearest hospital',
-      'Emergency numbers',
-    ];
+  State<AiVoiceAssistantScreen> createState() => _AiVoiceAssistantScreenState();
+}
 
+class _AiVoiceAssistantScreenState extends State<AiVoiceAssistantScreen> {
+  late stt.SpeechToText _speech;
+  late FlutterTts _flutterTts;
+  final AiService _aiService = AiService();
+
+  bool _isListening = false;
+  String _text = 'Tap the microphone to ask a question...';
+  String _aiResponse = "";
+  bool _isSpeaking = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _speech = stt.SpeechToText();
+    _flutterTts = FlutterTts();
+    _setupTts();
+  }
+
+  void _setupTts() {
+    _flutterTts.setStartHandler(() => setState(() => _isSpeaking = true));
+    _flutterTts.setCompletionHandler(() => setState(() => _isSpeaking = false));
+    _flutterTts.setErrorHandler((msg) => setState(() => _isSpeaking = false));
+  }
+
+  void _speak(String text) async {
+    if (text.isNotEmpty) {
+      await _flutterTts.setLanguage("en-US");
+      await _flutterTts.setPitch(1.0);
+      await _flutterTts.speak(text);
+    }
+  }
+
+  void _listen() async {
+    if (!_isListening) {
+      bool available = await _speech.initialize(
+        onStatus: (val) => print('onStatus: $val'),
+        onError: (val) => print('onError: $val'),
+      );
+      if (available) {
+        setState(() {
+          _isListening = true;
+          _text = "Listening..."; // පරණ එක මකනවා
+          _aiResponse = ""; // පරණ එක මකනවා
+        });
+        _speech.listen(
+          onResult: (val) => setState(() {
+            _text = val.recognizedWords;
+          }),
+        );
+      }
+    } else {
+      setState(() => _isListening = false);
+      _speech.stop();
+
+      // Process with AI Service
+      if (_text.isNotEmpty && _text != 'Listening...') {
+        setState(() => _aiResponse = "Thinking...");
+        String response = await _aiService.getResponse(_text);
+        setState(() => _aiResponse = response);
+        _speak(response);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFFAFBFC),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 20),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            _flutterTts.stop();
+            Navigator.pop(context);
+          },
         ),
-        title: const Text(
-          'AI Assistant',
-          style: TextStyle(
-            color: Color(0xFF1E293B),
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
+        title: const Text('SafeLanka AI Assistant', style: TextStyle(color: Color(0xFF1E293B), fontWeight: FontWeight.bold, fontSize: 18)),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -36,140 +96,74 @@ class AiVoiceAssistantScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             children: [
-              const Spacer(flex: 2),
-
-              // 1. Center Glowing Voice Assistant Ring Visualizer
+              const Spacer(flex: 1),
               Center(
-                child: Container(
-                  width: 170,
-                  height: 170,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFFA78BFA), // Pastel purple top
-                        Color(0xFF38BDF8), // Light blue bottom
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
+                child: AvatarGlow(
+                  animate: _isListening || _isSpeaking,
+                  glowColor: _isSpeaking ? Colors.green : const Color(0xFF6366F1),
+                  duration: const Duration(milliseconds: 2000),
+                  repeat: true,
+                  child: GestureDetector(
+                    onTap: _listen,
+                    child: Container(
+                      width: 140,
+                      height: 140,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: _isSpeaking
+                            ? [Colors.tealAccent, Colors.teal]
+                            : [const Color(0xFF818CF8), const Color(0xFF6366F1)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        boxShadow: [
+                          BoxShadow(color: Colors.indigo.withOpacity(0.3), blurRadius: 15, offset: const Offset(0, 8)),
+                        ],
+                      ),
+                      child: Icon(
+                        _isListening ? Icons.mic : (_isSpeaking ? Icons.volume_up : Icons.mic_none_rounded),
+                        color: Colors.white,
+                        size: 50,
+                      ),
                     ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 40),
+              Text(
+                _text,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 18, fontStyle: FontStyle.italic, color: Color(0xFF64748B)),
+              ),
+              const SizedBox(height: 20),
+              Expanded(
+                flex: 4,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: Colors.indigo.withOpacity(0.1)),
                     boxShadow: [
-                      // Outer soft visualizer ring effect
-                      BoxShadow(
-                        color: const Color(0xFF38BDF8).withOpacity(0.15),
-                        blurRadius: 30,
-                        spreadRadius: 15,
-                      ),
-                      // Inner tighter glowing halo
-                      BoxShadow(
-                        color: const Color(0xFFA78BFA).withOpacity(0.2),
-                        blurRadius: 20,
-                        spreadRadius: 5,
-                      ),
+                      BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 4)),
                     ],
                   ),
-                  child: const Icon(
-                    Icons.mic_none_outlined,
-                    color: Colors.white,
-                    size: 45,
+                  child: SingleChildScrollView(
+                    child: Text(
+                      _aiResponse.isEmpty ? "I am your emergency assistant. Ask me anything about safety guidelines or first aid." : _aiResponse,
+                      style: const TextStyle(fontSize: 17, color: Color(0xFF1E293B), height: 1.6, fontWeight: FontWeight.w500),
+                    ),
                   ),
                 ),
               ),
-
-              const Spacer(flex: 1),
-
-              // 2. Titles & Subtitles
-              const Text(
-                'How can I help you?',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF0F172A),
-                ),
-              ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 20),
               Text(
-                'You can ask me things like:',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[500],
-                  fontWeight: FontWeight.w500,
-                ),
+                _isListening ? "Listening..." : (_isSpeaking ? "Assistant is speaking..." : "Tap to talk"),
+                style: const TextStyle(color: Color(0xFF94A3B8), fontWeight: FontWeight.bold),
               ),
-
-              const SizedBox(height: 24),
-
-              // 3. Question Suggestion Chips
-              ...suggestions.map((text) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: OutlinedButton(
-                        onPressed: () {},
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          side: BorderSide(color: Colors.grey.withOpacity(0.15), width: 1),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(26.0), // Rounded pill style
-                          ),
-                        ),
-                        child: Text(
-                          text,
-                          style: const TextStyle(
-                            color: Color(0xFF334155),
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                  )),
-
-              const Spacer(flex: 3),
-
-              // 4. Bottom Interaction Floating Bar Action Area
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Bottom Left Icon Option
-                  IconButton(
-                    icon: Icon(Icons.help_outline, color: Colors.grey[400], size: 26),
-                    onPressed: () {},
-                  ),
-                  
-                  // Central Active Capture Button
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: const Color(0xFF3B82F6), // Strong material action blue
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF3B82F6).withOpacity(0.25),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        )
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.mic,
-                      color: Colors.white,
-                      size: 28,
-                    ),
-                  ),
-                  
-                  // Bottom Right Icon Option
-                  IconButton(
-                    icon: Icon(Icons.chat_bubble_outline, color: Colors.grey[400], size: 24),
-                   onPressed: () {
-  Navigator.pop(context);
-},
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 30),
             ],
           ),
         ),

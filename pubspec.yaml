@@ -42,6 +42,14 @@ dependencies:
   google_sign_in: ^7.2.0
   geolocator: ^14.0.3
   url_launcher: ^6.3.2
+  firebase_storage: ^13.4.3
+  image_picker: ^1.2.3
+  speech_to_text: ^7.4.0
+  avatar_glow: ^3.0.1
+  google_maps_flutter: ^2.17.1
+  flutter_sms: ^3.0.1
+  google_generative_ai: ^0.4.6
+  flutter_tts: ^4.1.1
 
 
 dev_dependencies:
@@ -67,9 +75,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - assets/images/
-  #   - assets/icons/
+  assets:
+    - assets/guides/
+    - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

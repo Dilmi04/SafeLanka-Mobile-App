@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/guide_service.dart';
 import 'guide_details_screen.dart';
 
 class EmergencyGuideScreen extends StatelessWidget {
@@ -14,15 +15,7 @@ class EmergencyGuideScreen extends StatelessWidget {
         icon: Icons.waves,
         iconColor: const Color(0xFF2B82C9),
         bgColor: const Color(0xFFE3F2FD),
-        heading: 'What to do during a flood',
-        imageUrl: 'https://img.freepik.com/free-vector/flood-concept-illustration_114360-11116.jpg',
-        steps: [
-          'Move to higher ground immediately.',
-          'Do not walk or drive through flooded areas.',
-          'Turn off electricity at the main switch if safe.',
-          'Keep emergency supplies in a safe place.',
-          'Stay updated through official channels.',
-        ],
+        jsonFile: 'flood',
       ),
       GuideItem(
         title: 'Landslide Safety',
@@ -30,15 +23,7 @@ class EmergencyGuideScreen extends StatelessWidget {
         icon: Icons.terrain,
         iconColor: const Color(0xFF8D6E63),
         bgColor: const Color(0xFFEFEBE9),
-        heading: 'How to stay safe during landslides',
-        imageUrl: 'https://img.freepik.com/free-vector/disaster-concept-illustration_114360-10903.jpg',
-        steps: [
-          'Move to higher ground immediately.',
-          'Do not stay in the path of a slide.',
-          'Listen for unusual sounds like trees cracking.',
-          'Keep emergency supplies in a safe place.',
-          'Stay updated through official channels.',
-        ],
+        jsonFile: 'landslide',
       ),
       GuideItem(
         title: 'First Aid',
@@ -46,15 +31,7 @@ class EmergencyGuideScreen extends StatelessWidget {
         icon: Icons.add_box,
         iconColor: const Color(0xFFE53935),
         bgColor: const Color(0xFFFFEBEE),
-        heading: 'Basic first aid knowledge',
-        imageUrl: 'https://img.freepik.com/free-vector/first-aid-kit-concept-illustration_114360-1284.jpg',
-        steps: [
-          'Check the scene for safety first.',
-          'Call for emergency help immediately.',
-          'Apply firm pressure to stop bleeding.',
-          'Cool a burn with cold running water.',
-          'Keep an injured person calm and still.',
-        ],
+        jsonFile: 'first_aid',
       ),
       GuideItem(
         title: 'Fire Safety',
@@ -62,31 +39,15 @@ class EmergencyGuideScreen extends StatelessWidget {
         icon: Icons.local_fire_department,
         iconColor: const Color(0xFFF4511E),
         bgColor: const Color(0xFFFBE9E7),
-        heading: 'What to do during a fire',
-        imageUrl: 'https://img.freepik.com/free-vector/fire-safety-concept-illustration_114360-10878.jpg',
-        steps: [
-          'Get out immediately. Stay low to the floor.',
-          'Feel doors before opening; if hot, use another exit.',
-          'Use the stairs; do not use the elevator.',
-          'If your clothes catch fire, stop, drop, and roll.',
-          'Call emergency services once you are safe.',
-        ],
+        jsonFile: 'fire',
       ),
       GuideItem(
         title: 'Earthquake Safety',
         subtitle: 'Safety tips during earthquakes',
-        icon: Icons.gavel, // Note: Icon changed from gavel to earthquake-like icon in UI but kept for consistency
+        icon: Icons.vibration,
         iconColor: const Color(0xFF5E35B1),
         bgColor: const Color(0xFFEDE7F6),
-        heading: 'Safety tips during earthquakes',
-        imageUrl: 'https://img.freepik.com/free-vector/earthquake-disaster-concept-illustration_114360-11115.jpg',
-        steps: [
-          'Drop, Cover, and Hold On under sturdy furniture.',
-          'Stay away from windows, glass, and outside walls.',
-          'If in bed, stay there and protect your head with a pillow.',
-          'Do not run outside until the shaking stops.',
-          'If outdoors, move to a clear area away from buildings and trees.',
-        ],
+        jsonFile: 'earthquake',
       ),
       GuideItem(
         title: 'Emergency Contacts',
@@ -94,15 +55,7 @@ class EmergencyGuideScreen extends StatelessWidget {
         icon: Icons.phone,
         iconColor: const Color(0xFF43A047),
         bgColor: const Color(0xFFE8F5E9),
-        heading: 'Important hotline numbers',
-        imageUrl: 'https://img.freepik.com/free-vector/emergency-call-concept-illustration_114360-10904.jpg',
-        steps: [
-          'Police Emergency: 119',
-          'Ambulance/Medical Emergency: 1990 (Suwa Seriya)',
-          'Fire & Rescue Service: 110',
-          'Disaster Management Centre: 117',
-          'Tourist Police: 011 242 1052',
-        ],
+        jsonFile: 'contacts',
       ),
     ];
 
@@ -123,12 +76,6 @@ class EmergencyGuideScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search, color: Colors.black, size: 24),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -181,15 +128,16 @@ class EmergencyGuideScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              onTap: () {
+              onTap: () async {
+                final guide = await GuideService().loadGuide(item.jsonFile);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => GuideDetailsScreen(
-                      title: item.title,
-                      heading: item.heading,
-                      imageUrl: item.imageUrl,
-                      safetySteps: item.steps,
+                      title: guide.title,
+                      heading: guide.heading,
+                      imageUrl: guide.imageUrl,
+                      safetySteps: guide.safetySteps,
                     ),
                   ),
                 );
@@ -209,9 +157,7 @@ class GuideItem {
   final IconData icon;
   final Color iconColor;
   final Color bgColor;
-  final String heading;
-  final String imageUrl;
-  final List<String> steps;
+  final String jsonFile;
 
   GuideItem({
     required this.title,
@@ -219,8 +165,6 @@ class GuideItem {
     required this.icon,
     required this.iconColor,
     required this.bgColor,
-    required this.heading,
-    required this.imageUrl,
-    required this.steps,
+    required this.jsonFile,
   });
 }

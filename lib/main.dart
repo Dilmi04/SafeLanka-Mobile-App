@@ -90,7 +90,6 @@ class SafeLankaApp extends StatelessWidget {
         '/ai-assistant': (_) => const AiVoiceAssistantScreen(),
         '/missing-list': (_) => const MissingPersonsListScreen(),
         '/missing-report': (_) => const ReportMissingPersonScreen(),
-        '/missing-details': (_) => const MissingPersonDetailsScreen(),
         '/settings':  (_) => const SettingsScreen(),
         '/about':     (_) => const AboutUsScreen(),
         '/place':     (_) => const PlaceDetailsScreen(
