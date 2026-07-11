@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:safelanka/services/auth_service.dart';
 import 'package:safelanka/utils/constants.dart';
+import 'package:safelanka/screens/login_screen.dart';
 import 'home_screen.dart';
 import 'map_screen.dart';
-import 'profile_screen.dart';
-
 
 class NavigationDrawerWidget extends StatelessWidget {
   const NavigationDrawerWidget({super.key});
-
-  void _showComingSoon(BuildContext context, String feature) {
-    Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$feature screen coming soon')),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +28,10 @@ class NavigationDrawerWidget extends StatelessWidget {
               children: [
                 Container(
                   padding: const EdgeInsets.all(10),
-                  decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                  child: const Icon(Icons.shield, color: AppColors.primaryDark, size: 26),
+                  decoration: const BoxDecoration(
+                      color: Colors.white, shape: BoxShape.circle),
+                  child: const Icon(Icons.shield,
+                      color: AppColors.primaryDark, size: 26),
                 ),
                 const SizedBox(width: 12),
                 Column(
@@ -45,17 +39,26 @@ class NavigationDrawerWidget extends StatelessWidget {
                   children: [
                     RichText(
                       text: const TextSpan(
-                        style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 19, fontWeight: FontWeight.bold),
                         children: [
-                          TextSpan(text: "Safe", style: TextStyle(color: Colors.white)),
-                          TextSpan(text: "Lanka", style: TextStyle(color: AppColors.guideOrange)),
+                          TextSpan(
+                              text: "Safe",
+                              style: TextStyle(color: Colors.white)),
+                          TextSpan(
+                              text: "Lanka",
+                              style:
+                              TextStyle(color: AppColors.guideOrange)),
                         ],
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      user != null ? "Welcome, $userName" : "Stay safe, Stay prepared",
-                      style: const TextStyle(color: Colors.white70, fontSize: 12),
+                      user != null
+                          ? "Welcome, $userName"
+                          : "Stay safe, Stay prepared",
+                      style:
+                      const TextStyle(color: Colors.white70, fontSize: 12),
                     ),
                   ],
                 ),
@@ -71,7 +74,8 @@ class NavigationDrawerWidget extends StatelessWidget {
             selected: true,
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const HomeScreen()));
             },
           ),
           _DrawerTile(
@@ -79,7 +83,8 @@ class NavigationDrawerWidget extends StatelessWidget {
             label: "Safe Locations",
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const MapScreen()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const MapScreen()));
             },
           ),
           _DrawerTile(
@@ -144,16 +149,45 @@ class NavigationDrawerWidget extends StatelessWidget {
             child: Divider(height: 24),
           ),
 
+          // ── Logout / Login button ──
           if (user != null)
             _DrawerTile(
               icon: Icons.logout,
               label: "Logout",
               color: AppColors.sosRed,
               onTap: () async {
-                await authService.signOut();
+                // Close drawer first
+                Navigator.pop(context);
+
+                // Show loading dialog
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+
+                try {
+                  await authService.signOut().timeout(
+                    const Duration(seconds: 5),
+                    onTimeout: () {
+                      debugPrint('Sign out timed out, forcing navigation');
+                    },
+                  );
+                } catch (e) {
+                  debugPrint('Logout error: $e');
+                }
+
+                // Close loading dialog and go to login
                 if (context.mounted) {
-                  Navigator.pop(context);
-                  Navigator.pushReplacementNamed(context, '/home');
+                  Navigator.of(context, rootNavigator: true).pop();
+                  Navigator.of(context, rootNavigator: true)
+                      .pushAndRemoveUntil(
+                    MaterialPageRoute(
+                        builder: (_) => const LoginScreen()),
+                        (route) => false, // clear all routes
+                  );
                 }
               },
             )
@@ -190,7 +224,8 @@ class _DrawerTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tileColor = color ?? (selected ? AppColors.primaryDark : Colors.black87);
+    final tileColor =
+        color ?? (selected ? AppColors.primaryDark : Colors.black87);
     return ListTile(
       onTap: onTap,
       leading: Icon(icon, color: tileColor, size: 22),

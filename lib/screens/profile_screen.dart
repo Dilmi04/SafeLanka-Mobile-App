@@ -7,8 +7,8 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authService = AuthService();
-    final user = authService.currentUser;
+
+    final user = AuthService().currentUser;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -71,40 +71,7 @@ class ProfileScreen extends StatelessWidget {
           _ProfileMenuTile(icon: Icons.help_outline, label: "Help & Support", onTap: () {}),
           _ProfileMenuTile(icon: Icons.info_outline, label: "About SafeLanka", onTap: () {}),
 
-          const SizedBox(height: 20),
 
-          // ---- Logout button ----
-          Material(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(14),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(14),
-              onTap: () async {
-                await authService.signOut();
-                if (context.mounted) {
-                  Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
-                }
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: Colors.grey.shade200),
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.logout, color: AppColors.sosRed, size: 18),
-                    SizedBox(width: 8),
-                    Text(
-                      "Logout",
-                      style: TextStyle(color: AppColors.sosRed, fontWeight: FontWeight.w600),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );
