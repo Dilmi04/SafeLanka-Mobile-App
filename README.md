@@ -90,8 +90,8 @@ lib/
 
 | Member | Responsibilities |
 |---------|------------------|
-| **Dilmi** | Safe Locations, Maps, Navigation, Place Details, Distance Calculation, UI Design |
-| **Sachini** | Authentication, SOS Alerts, Emergency Contacts, Location Sharing |
+| **Dilmi** | Safe Locations, Maps, Navigation, Place Details, Distance Calculation |
+| **Sachini** | Authentication, SOS Alerts, Emergency Contacts |
 | **Devini** | Emergency Guide, AI Voice Assistant, Missing Person Module |
 
 ---
