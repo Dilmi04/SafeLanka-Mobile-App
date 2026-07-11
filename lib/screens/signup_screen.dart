@@ -53,10 +53,10 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() => _isLoading = true);
     try {
       final user = await _authService.registerWithEmail(
-        _nameCtrl.text.trim(),
-        _emailCtrl.text.trim(),
-        _phoneCtrl.text.trim(),
-        _passCtrl.text.trim(),
+        name: _nameCtrl.text.trim(),
+        email: _emailCtrl.text.trim(),
+        phone: _phoneCtrl.text.trim(),
+        password: _passCtrl.text.trim(),
       );
       if (user != null && mounted) {
         Navigator.pushAndRemoveUntil(

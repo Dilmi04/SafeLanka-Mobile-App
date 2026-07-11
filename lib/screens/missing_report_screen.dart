@@ -33,24 +33,29 @@ class _ReportMissingPersonScreenState extends State<ReportMissingPersonScreen> {
 
   // පින්තූරයක් තෝරාගැනීමේ function එක
   Future<void> _pickImage() async {
-    // Adding compression and resizing to speed up upload
-    final XFile? selected = await _picker.pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 800,
-      imageQuality: 70,
-    );
-    if (selected != null) {
-      if (kIsWeb) {
-        final bytes = await selected.readAsBytes();
-        setState(() {
-          _pickedFile = selected;
-          _webImageBytes = bytes;
-        });
-      } else {
-        setState(() {
-          _pickedFile = selected;
-        });
+    try {
+      // 1. පින්තූරය තෝරාගන්නා විටම එහි සයිස් එක සහ කොලිටිය අඩු කිරීම (Compression)
+      final XFile? selected = await _picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 800, // පළල 800px වලට සීමා කිරීම
+        imageQuality: 50, // කොලිටිය 50% දක්වා අඩු කිරීම (වේගය වැඩි කිරීමට)
+      );
+      
+      if (selected != null) {
+        if (kIsWeb) {
+          final bytes = await selected.readAsBytes();
+          setState(() {
+            _pickedFile = selected;
+            _webImageBytes = bytes;
+          });
+        } else {
+          setState(() {
+            _pickedFile = selected;
+          });
+        }
       }
+    } catch (e) {
+      debugPrint("Error picking image: $e");
     }
   }
 
@@ -67,23 +72,23 @@ class _ReportMissingPersonScreenState extends State<ReportMissingPersonScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // 1. පින්තූරය Upload කර URL එක ලබා ගැනීම
+      // 1. පින්තූරය Upload කර URL එක ලබා ගැනීම (Compressed image එක තමයි යන්නේ)
       String imageUrl = await _firebaseService.uploadImage(_pickedFile!);
-      
+
       if (imageUrl.isEmpty) {
         throw Exception("Failed to upload image. Please check your internet connection.");
       }
 
       // 2. Report Model එක සෑදීම
       ReportModel report = ReportModel(
-        name: _nameController.text,
-        age: int.parse(_ageController.text),
-        description: _descriptionController.text,
-        lastSeenLocation: _locationController.text,
+        name: _nameController.text.trim(),
+        age: int.parse(_ageController.text.trim()),
+        description: _descriptionController.text.trim(),
+        lastSeenLocation: _locationController.text.trim(),
         lastSeenDate: _selectedDate ?? DateTime.now(),
         imageUrl: imageUrl,
         status: 'Missing',
-        reportedBy: FirebaseAuth.instance.currentUser?.uid ?? 'unknown',
+        reportedBy: FirebaseAuth.instance.currentUser?.uid ?? 'Guest',
       );
 
       // 3. Firestore එකට දත්ත යැවීම
@@ -91,14 +96,14 @@ class _ReportMissingPersonScreenState extends State<ReportMissingPersonScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Report submitted successfully!')),
+          const SnackBar(content: Text('Report submitted successfully!'), backgroundColor: Colors.green),
         );
         Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(content: Text('Submission failed: $e'), backgroundColor: Colors.red),
         );
       }
     } finally {

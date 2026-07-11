@@ -75,7 +75,7 @@ class SafeLankaApp extends StatelessWidget {
         '/missing-report':    (_) => const ReportMissingPersonScreen(),
         '/settings':          (_) => const SettingsScreen(),
         '/about':             (_) => const AboutUsScreen(),
-        '/notifications':     (_) => const NotificationsScreen(),
+        '/notifications':     (_) => NotificationsScreen(),
         '/place':             (_) => const PlaceDetailsScreen(
           placeName: "SJGH Hospital",
           placeType: "Hospital",

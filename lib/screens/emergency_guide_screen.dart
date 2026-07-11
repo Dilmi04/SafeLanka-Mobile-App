@@ -60,6 +60,7 @@ class EmergencyGuideScreen extends StatelessWidget {
     ];
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -70,9 +71,9 @@ class EmergencyGuideScreen extends StatelessWidget {
         title: const Text(
           'Emergency Guide',
           style: TextStyle(
-            color: Colors.black,
+            color: Color(0xFF1E293B),
             fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontSize: 18,
           ),
         ),
         centerTitle: true,
@@ -94,9 +95,10 @@ class EmergencyGuideScreen extends StatelessWidget {
                   offset: const Offset(0, 4),
                 ),
               ],
+              border: Border.all(color: Colors.grey.withOpacity(0.1)),
             ),
             child: ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               leading: Container(
                 width: 50,
                 height: 50,
@@ -118,29 +120,33 @@ class EmergencyGuideScreen extends StatelessWidget {
                   color: Color(0xFF212529),
                 ),
               ),
-              subtitle: Padding(
-                padding: const EdgeInsets.only(top: 4.0),
-                child: Text(
-                  item.subtitle,
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 13,
-                  ),
+              subtitle: Text(
+                item.subtitle,
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 13,
                 ),
               ),
+              trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey),
               onTap: () async {
-                final guide = await GuideService().loadGuide(item.jsonFile);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => GuideDetailsScreen(
-                      title: guide.title,
-                      heading: guide.heading,
-                      imageUrl: guide.imageUrl,
-                      safetySteps: guide.safetySteps,
+                try {
+                  final guide = await GuideService().loadGuide(item.jsonFile);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => GuideDetailsScreen(
+                        title: guide.title,
+                        heading: guide.heading,
+                        imageUrl: guide.imageUrl,
+                        safetySteps: guide.safetySteps,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error loading guide: $e')),
+                  );
+                }
               },
             ),
           );
@@ -149,7 +155,6 @@ class EmergencyGuideScreen extends StatelessWidget {
     );
   }
 }
-
 
 class GuideItem {
   final String title;

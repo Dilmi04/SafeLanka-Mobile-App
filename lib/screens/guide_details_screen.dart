@@ -50,13 +50,13 @@ class GuideDetailsScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               width: double.infinity,
-              height: 220,
+              height: 200,
               decoration: BoxDecoration(
                 color: const Color(0xFFF8FAFC),
                 borderRadius: BorderRadius.circular(20.0),
@@ -66,7 +66,7 @@ class GuideDetailsScreen extends StatelessWidget {
                 child: imageUrl.startsWith('http')
                   ? Image.network(
                       imageUrl,
-                      fit: BoxFit.contain,
+                      fit: BoxFit.cover,
                       loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;
                         return const Center(child: CircularProgressIndicator(strokeWidth: 2));
@@ -75,7 +75,7 @@ class GuideDetailsScreen extends StatelessWidget {
                     )
                   : Image.asset(
                       imageUrl,
-                      fit: BoxFit.contain,
+                      fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => _buildErrorWidget(),
                     ),
               ),
@@ -108,6 +108,7 @@ class GuideDetailsScreen extends StatelessWidget {
                     ],
                   ),
                 )).toList(),
+            const SizedBox(height: 40),
           ],
         ),
       ),
