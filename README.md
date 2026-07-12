@@ -41,8 +41,9 @@ SafeLanka is a mobile application developed to support people in Sri Lanka durin
 ---
 
 ## 🤖 AI Assistance
-- AI-powered voice assistant
-- Emergency guidance using Google Gemini API
+- Speech-to-Text voice input
+- Text-to-Speech
+- AI-powered emergency guidance using Google Gemini API
 
 ---
 
@@ -90,9 +91,10 @@ lib/
 
 | Member | Responsibilities |
 |---------|------------------|
-| **Dilmi** | Safe Locations, Maps, Navigation, Place Details, Distance Calculation |
-| **Sachini** | Authentication, SOS Alerts, Emergency Contacts |
-| **Devini** | Emergency Guide, AI Voice Assistant, Missing Person Module |
+| **Dilmi Sandunika** | Safe Location Map, GPS Tracking, Navigation & Directions, Distance Calculation, Application Integration |
+| **Sachini Kavindya** | Firebase Authentication (Login/Signup), SOS Alerts, Emergency Contacts |
+| **Devini Thathsarani** | Offline Emergency Guide, AI Voice Assistant (Gemini API), Missing Person Reporting, Firebase Storage |
+| **All Members** |  UI/UX Design & Implementation, Testing, Bug Fixing, GitHub Collaboration |
 
 ---
 
