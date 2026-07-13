@@ -52,8 +52,8 @@ class _AiVoiceAssistantScreenState extends State<AiVoiceAssistantScreen> {
       if (available) {
         setState(() {
           _isListening = true;
-          _text = "Listening..."; // පරණ එක මකනවා
-          _aiResponse = ""; // පරණ එක මකනවා
+          _text = "Listening..."; 
+          _aiResponse = ""; 
         });
         _speech.listen(
           onResult: (val) => setState(() {
@@ -65,7 +65,6 @@ class _AiVoiceAssistantScreenState extends State<AiVoiceAssistantScreen> {
       setState(() => _isListening = false);
       _speech.stop();
 
-      // Process with AI Service
       if (_text.isNotEmpty && _text != 'Listening...') {
         setState(() => _aiResponse = "Thinking...");
         String response = await _aiService.getResponse(_text);
