@@ -299,7 +299,6 @@ class _SocialButton extends StatelessWidget {
     );
   }
 
-  // Google 'G' icon drawn with CustomPaint
   Widget _googleIcon() {
     return CustomPaint(
       size: const Size(24, 24),
@@ -307,7 +306,6 @@ class _SocialButton extends StatelessWidget {
     );
   }
 
-  // Facebook 'f' icon
   Widget _facebookIcon() {
     return Container(
       width: 24,
@@ -331,14 +329,12 @@ class _SocialButton extends StatelessWidget {
   }
 }
 
-// Custom painter for Google 'G' icon
 class _GoogleIconPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2;
 
-    // Draw circle segments (Google colors)
     final colors = [
       const Color(0xFF4285F4), // blue
       const Color(0xFF34A853), // green
