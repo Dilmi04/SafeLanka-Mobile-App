@@ -25,10 +25,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
     _controller.forward();
 
-    // Navigate to Home after 3 seconds
+    // Navigate to Login after 3 seconds
     Timer(const Duration(seconds: 3), () {
       if (mounted) {
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushReplacementNamed(context, '/login');
       }
     });
   }

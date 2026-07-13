@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -18,20 +19,20 @@ class _MapScreenState extends State<MapScreen> {
   final MapController _mapController = MapController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final TextEditingController _searchController = TextEditingController();
+  StreamSubscription<Position>? _positionStreamSubscription;
   
   LatLng? _currentLocation;
   bool _isLoadingLocation = true;
   List<Map<String, dynamic>> _allPlaces = [];
   List<Map<String, dynamic>> _filteredPlaces = [];
   String _selectedFilter = "All";
-  bool _permissionAsked = false;
 
+  // Note: We keep these as fallback/demo markers, but distances will be dynamic
   final List<Map<String, dynamic>> _staticPlaces = [
     {
-      "name": "Sri Jayawardenepura General Hospital",
+      "name": "Sri Jayawardenepura Hospital",
       "type": "Hospital",
       "location": const LatLng(6.8817, 79.9189),
-      "distance": "3.2 km away",
       "phone": "+94112778610",
       "color": AppColors.sosRed,
       "icon": Icons.local_hospital_rounded,
@@ -40,7 +41,6 @@ class _MapScreenState extends State<MapScreen> {
       "name": "Police Station - Mirihana",
       "type": "Police",
       "location": const LatLng(6.8711, 79.8973),
-      "distance": "2.1 km away",
       "phone": "+94112854853",
       "color": AppColors.primary,
       "icon": Icons.local_police_rounded,
@@ -49,7 +49,6 @@ class _MapScreenState extends State<MapScreen> {
       "name": "Gangodawila Community Center",
       "type": "Shelter",
       "location": const LatLng(6.8550, 79.8980),
-      "distance": "0.8 km away",
       "phone": "+94112852278",
       "color": AppColors.safeGreen,
       "icon": Icons.home_rounded,
@@ -59,13 +58,21 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-    _allPlaces = List.from(_staticPlaces);
-    _filteredPlaces = List.from(_staticPlaces);
+    _fetchNearbyPlacesFromFirestore();
     
-    // Show permission info before asking
+    // Start tracking location immediately
+    _startLocationUpdates();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showLocationExplanation();
     });
+  }
+
+  @override
+  void dispose() {
+    _positionStreamSubscription?.cancel();
+    _searchController.dispose();
+    super.dispose();
   }
 
   void _showLocationExplanation() {
@@ -85,10 +92,10 @@ class _MapScreenState extends State<MapScreen> {
               child: const Icon(Icons.location_on, size: 40, color: AppColors.primary),
             ),
             const SizedBox(height: 20),
-            const Text("Enable Location Access", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const Text("Enable Precise Location", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             const Text(
-              "SafeLanka needs your location to show nearby hospitals, police stations, and safe shelters in real-time.",
+              "SafeLanka needs your precise real-time location to show nearby emergency services accurately.",
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.textGrey, fontSize: 14),
             ),
@@ -98,7 +105,7 @@ class _MapScreenState extends State<MapScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  _initMap();
+                  _fetchCurrentLocation(); // Initial fetch and move
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
@@ -115,10 +122,21 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  Future<void> _initMap() async {
-    await _fetchNearbyPlacesFromFirestore();
-    await _fetchCurrentLocation();
-    _applyFilter();
+  void _startLocationUpdates() {
+    _positionStreamSubscription = LocationService.getPositionStream().listen(
+      (Position position) {
+        if (mounted) {
+          setState(() {
+            _currentLocation = LatLng(position.latitude, position.longitude);
+            _isLoadingLocation = false;
+          });
+          _applyFilter(); // Recalculate distances
+        }
+      },
+      onError: (e) {
+        debugPrint("Location update error: $e");
+      }
+    );
   }
 
   Future<void> _fetchCurrentLocation() async {
@@ -130,11 +148,12 @@ class _MapScreenState extends State<MapScreen> {
         _currentLocation = latLng;
         _isLoadingLocation = false;
       });
-      _mapController.move(latLng, 14.5);
+      _mapController.move(latLng, 15.0);
+      _applyFilter();
     } catch (e) {
       setState(() => _isLoadingLocation = false);
-      // For demo, if GPS fails, move to USJP Campus
-      _mapController.move(const LatLng(6.8528, 79.9036), 14.0);
+      // Fallback only if GPS fails completely
+      _mapController.move(const LatLng(6.9271, 79.8612), 14.0); 
     }
   }
 
@@ -144,21 +163,10 @@ class _MapScreenState extends State<MapScreen> {
       List<Map<String, dynamic>> firestorePlaces = [];
       for (var doc in snapshot.docs) {
         final data = doc.data();
-        final double lat = (data['lat'] as num).toDouble();
-        final double lng = (data['lng'] as num).toDouble();
-        final LatLng location = LatLng(lat, lng);
-
-        String distanceText = "Distance unknown";
-        if (_currentLocation != null) {
-          double dist = Geolocator.distanceBetween(_currentLocation!.latitude, _currentLocation!.longitude, lat, lng);
-          distanceText = dist >= 1000 ? "${(dist / 1000).toStringAsFixed(1)} km away" : "${dist.round()} m away";
-        }
-
         firestorePlaces.add({
           "name": data['name'] ?? "Unknown Place",
           "type": data['type'] ?? "Other",
-          "location": location,
-          "distance": distanceText,
+          "location": LatLng((data['lat'] as num).toDouble(), (data['lng'] as num).toDouble()),
           "phone": data['phone'] ?? "No Phone",
           "color": _getColorForType(data['type']),
           "icon": _getIconForType(data['type']),
@@ -170,17 +178,45 @@ class _MapScreenState extends State<MapScreen> {
       });
     } catch (e) {
       debugPrint("Firestore error: $e");
+      setState(() {
+        _allPlaces = List.from(_staticPlaces);
+        _applyFilter();
+      });
     }
   }
 
   void _applyFilter() {
     setState(() {
       String query = _searchController.text.toLowerCase();
-      _filteredPlaces = _allPlaces.where((place) {
+      
+      // 1. Filter by search and category
+      List<Map<String, dynamic>> filtered = _allPlaces.where((place) {
         bool matchesSearch = place['name'].toString().toLowerCase().contains(query);
         bool matchesType = _selectedFilter == "All" || place['type'] == _selectedFilter;
         return matchesSearch && matchesType;
       }).toList();
+
+      // 2. Calculate dynamic distance for all items
+      for (var place in filtered) {
+        if (_currentLocation != null) {
+          double dist = Geolocator.distanceBetween(
+            _currentLocation!.latitude, _currentLocation!.longitude,
+            place['location'].latitude, place['location'].longitude
+          );
+          
+          place['distRaw'] = dist;
+          place['distance'] = dist >= 1000 
+              ? "${(dist / 1000).toStringAsFixed(1)} km away" 
+              : "${dist.round()} m away";
+        } else {
+          place['distRaw'] = 999999.0;
+          place['distance'] = "Calculating...";
+        }
+      }
+
+      // 3. Sort by distance
+      filtered.sort((a, b) => (a['distRaw'] as double).compareTo(b['distRaw'] as double));
+      _filteredPlaces = filtered;
     });
   }
 
@@ -231,7 +267,6 @@ class _MapScreenState extends State<MapScreen> {
                 fillColor: Colors.white,
                 contentPadding: const EdgeInsets.symmetric(vertical: 0),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
               ),
             ),
           ),
@@ -335,13 +370,13 @@ class _MapScreenState extends State<MapScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Results (${_filteredPlaces.length})",
+                    "Safe Places Near You (${_filteredPlaces.length})",
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark),
                   ),
                   const SizedBox(height: 12),
                   Expanded(
                     child: _filteredPlaces.isEmpty
-                      ? const Center(child: Text("No places found matching your search."))
+                      ? const Center(child: Text("No places found nearby."))
                       : ListView.builder(
                           itemCount: _filteredPlaces.length,
                           itemBuilder: (context, index) => _buildPlaceCard(_filteredPlaces[index]),
@@ -370,7 +405,11 @@ class _MapScreenState extends State<MapScreen> {
   void _showPlaceInfo(Map<String, dynamic> place) {
     _mapController.move(place['location'], 15.0);
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("${place['name']} - ${place['type']}"), behavior: SnackBarBehavior.floating),
+      SnackBar(
+        content: Text("${place['name']} - ${place['distance']}"), 
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: place['color'],
+      ),
     );
   }
 

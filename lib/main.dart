@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
+import 'package:safelanka/firebase_options.dart';
 import 'package:safelanka/screens/splash_screen.dart';
 import 'package:safelanka/screens/login_screen.dart';
 import 'package:safelanka/screens/signup_screen.dart';
@@ -25,22 +25,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   try {
-    if (kIsWeb) {
-      await Firebase.initializeApp(
-        options: const FirebaseOptions(
-          apiKey: "AIzaSyAp2Rsf3n7hE8YZ6HFGsU8_xPQkjZQNcxc",
-          authDomain: "safelanka-56cc6.firebaseapp.com",
-          projectId: "safelanka-56cc6",
-          storageBucket: "safelanka-56cc6.firebasestorage.app",
-          messagingSenderId: "886931493603",
-          appId: "1:886931493603:web:af46e42770364b676cebd6",
-        ),
-      );
-    } else {
-      await Firebase.initializeApp();
-    }
+    // Correct Firebase initialization for all platforms
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   } catch (e) {
-    debugPrint("Firebase init failed: $e");
+    debugPrint("Firebase initialization failed: $e");
   }
 
   runApp(const SafeLankaApp());
