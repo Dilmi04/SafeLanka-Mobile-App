@@ -16,7 +16,6 @@ class LocationService {
       throw Exception("Location permission permanently denied");
     }
 
-    // Use best accuracy settings for more precise location
     return await Geolocator.getCurrentPosition(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.best,
@@ -28,7 +27,7 @@ class LocationService {
     return Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.best,
-        distanceFilter: 5, // Update only if moved more than 5 meters
+        distanceFilter: 5, 
       ),
     );
   }
