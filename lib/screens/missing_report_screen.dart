@@ -31,14 +31,12 @@ class _ReportMissingPersonScreenState extends State<ReportMissingPersonScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   DateTime? _selectedDate;
 
-  // පින්තූරයක් තෝරාගැනීමේ function එක
   Future<void> _pickImage() async {
     try {
-      // 1. පින්තූරය තෝරාගන්නා විටම එහි සයිස් එක සහ කොලිටිය අඩු කිරීම (Compression)
       final XFile? selected = await _picker.pickImage(
         source: ImageSource.gallery,
-        maxWidth: 800, // පළල 800px වලට සීමා කිරීම
-        imageQuality: 50, // කොලිටිය 50% දක්වා අඩු කිරීම (වේගය වැඩි කිරීමට)
+        maxWidth: 800, 
+        imageQuality: 50, 
       );
       
       if (selected != null) {
@@ -59,7 +57,6 @@ class _ReportMissingPersonScreenState extends State<ReportMissingPersonScreen> {
     }
   }
 
-  // Report එක Submit කිරීමේ function එක
   Future<void> _submitReport() async {
     if (!_formKey.currentState!.validate()) return;
     if (_pickedFile == null) {
@@ -72,14 +69,12 @@ class _ReportMissingPersonScreenState extends State<ReportMissingPersonScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // 1. පින්තූරය Upload කර URL එක ලබා ගැනීම (Compressed image එක තමයි යන්නේ)
       String imageUrl = await _firebaseService.uploadImage(_pickedFile!);
 
       if (imageUrl.isEmpty) {
         throw Exception("Failed to upload image. Please check your internet connection.");
       }
 
-      // 2. Report Model එක සෑදීම
       ReportModel report = ReportModel(
         name: _nameController.text.trim(),
         age: int.parse(_ageController.text.trim()),
@@ -91,7 +86,6 @@ class _ReportMissingPersonScreenState extends State<ReportMissingPersonScreen> {
         reportedBy: FirebaseAuth.instance.currentUser?.uid ?? 'Guest',
       );
 
-      // 3. Firestore එකට දත්ත යැවීම
       await _firebaseService.addReport(report);
 
       if (mounted) {
@@ -111,7 +105,6 @@ class _ReportMissingPersonScreenState extends State<ReportMissingPersonScreen> {
     }
   }
 
-  // Helper method to build custom labeled form fields
   Widget _buildFormField({
     required String label,
     required String hint,
