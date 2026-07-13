@@ -15,7 +15,6 @@ class UserModel {
     this.createdAt,
   });
 
-  // ─── From Firestore document ───────────────────────────────────────────────
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       uid: map['uid'] ?? '',
@@ -29,7 +28,6 @@ class UserModel {
     );
   }
 
-  // ─── To Firestore document ─────────────────────────────────────────────────
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
@@ -40,7 +38,6 @@ class UserModel {
     };
   }
 
-  // ─── Copy with updated fields ──────────────────────────────────────────────
   UserModel copyWith({
     String? uid,
     String? name,
